@@ -42,15 +42,18 @@ class Player(pygame.sprite.Sprite):
         self.on_ground = False
 
     def update(self, keys):
-        self.check_platform_collision()
-        # liikkuminen
-        if keys[pygame.K_LEFT]:
-            self.rect.x -= player_speed
-        if keys[pygame.K_RIGHT]:
-            self.rect.x += player_speed
 
+        # liikkuminen
+        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+            self.rect.x -= player_speed
+        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+            self.rect.x += player_speed
+        if keys[pygame.K_LSHIFT] and keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+            self.rect.x += player_speed*1.155
+        if keys[pygame.K_LSHIFT] and keys[pygame.K_a] or keys[pygame.K_LEFT]:
+            self.rect.x -= player_speed*1.155
         # Jump
-        if keys[pygame.K_SPACE] and self.on_ground:
+        if keys[pygame.K_SPACE] and self.on_ground or keys[pygame.K_w] and self.on_ground:
             self.velocity_y = -player_jump_power
             self.on_ground = False
 
@@ -58,17 +61,19 @@ class Player(pygame.sprite.Sprite):
         self.velocity_y += player_gravity
         self.rect.y += self.velocity_y
 
+        self.check_platform_collision()
  #problems with collision not working on top of the platforms making you fall through them
     def check_platform_collision(self):
+        self.on_ground = False
         for platform in platforms:
             if self.rect.colliderect(platform.rect):
                 # onko päällä
-                if self.velocity_y > 0 and self.rect.bottom - platform.rect.top < self.velocity_y:
+                if self.velocity_y >= 0 and self.rect.bottom <= platform.rect.top + self.velocity_y:
                     self.rect.bottom = platform.rect.top
                     self.velocity_y = 0
                     self.on_ground = True
                 # hyppääkö alta
-                elif self.velocity_y < 0 and self.rect.top - platform.rect.bottom < self.velocity_y:
+                elif self.velocity_y < 0 and self.rect.top >= platform.rect.bottom + self.velocity_y:
                     self.rect.top = platform.rect.bottom
                     self.velocity_y = 0
 
@@ -104,7 +109,6 @@ while running:
             sys.exit()
     keys = pygame.key.get_pressed()
     player.update(keys)
-
     # Näyttö boundaries
     if player.rect.left < 0:
         player.rect.left = 0
