@@ -62,13 +62,13 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += self.velocity_y
 
         self.check_platform_collision()
- #problems with collision not working on top of the platforms making you fall through them
+        
     def check_platform_collision(self):
-        self.on_ground = False
+        self.on_ground = False  # Oletuksena pelaaja ei ole maassa
         for platform in platforms:
             if self.rect.colliderect(platform.rect):
                 # onko päällä
-                if self.velocity_y >= 0 and self.rect.bottom <= platform.rect.top + self.velocity_y:
+                if self.velocity_y > 0 and self.rect.bottom >= platform.rect.top and self.rect.top < platform.rect.top:
                     self.rect.bottom = platform.rect.top
                     self.velocity_y = 0
                     self.on_ground = True
