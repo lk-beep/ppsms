@@ -76,15 +76,19 @@ class Player(pygame.sprite.Sprite):
                 elif self.velocity_y < 0 and self.rect.top >= platform.rect.bottom + self.velocity_y:
                     self.rect.top = platform.rect.bottom
                     self.velocity_y = 0
-                elif self.rect.x > 0 and self.rect.right >= platform.rect.left and self.rect.left < platform.rect.left:
-                    # osuuko vasemmalta
+                # osuuko vasemmalta
+                if self.rect.right >= platform.rect.left and self.rect.left < platform.rect.left:
                     self.rect.right = platform.rect.left
-                    self.rect.x = self.rect.x  # pysähdy (placeholder)
-                elif self.rect.x < 0 and self.rect.left <= platform.rect.right and self.rect.right > platform.rect.right:
-                    # osuuko oikealta
-                    print("osuin oikealle")
+                    # PYSÄYTTÄÄ KAIKEN LIIKKUMISEN
+                    self.velocity_y = 0
+                    player_speed = 0
+
+                # OSUUKO OIKEALTA
+                elif self.rect.left <= platform.rect.right and self.rect.right > platform.rect.right:
                     self.rect.left = platform.rect.right
-                    self.rect.x = self.rect.x # pysähdy (placeholder)
+                    # PYSÄYTTÄÄ KAIKEN LIIKKUMISEN
+                    self.velocity_y = 0
+                    player_speed = 0
                     
 class Platform(pygame.sprite.Sprite):
     def __init__(self, x, y):
