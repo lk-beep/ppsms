@@ -81,14 +81,14 @@ class Player(pygame.sprite.Sprite):
                     self.rect.right = platform.rect.left
                     # PYSÄYTTÄÄ KAIKEN LIIKKUMISEN
                     self.velocity_y = 0
-                    player_speed = 0
+                    self.on_ground = False
 
                 # OSUUKO OIKEALTA
                 elif self.rect.left <= platform.rect.right and self.rect.right > platform.rect.right:
                     self.rect.left = platform.rect.right
                     # PYSÄYTTÄÄ KAIKEN LIIKKUMISEN
                     self.velocity_y = 0
-                    player_speed = 0
+                    self.on_ground = False
                     
 class Platform(pygame.sprite.Sprite):
     def __init__(self, x, y):
