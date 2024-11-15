@@ -49,9 +49,9 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             self.rect.x += player_speed
         if keys[pygame.K_LSHIFT] and keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-            self.rect.x += player_speed*1.155
+            self.rect.x += player_speed*1.145
         if keys[pygame.K_LSHIFT] and keys[pygame.K_a] or keys[pygame.K_LEFT]:
-            self.rect.x -= player_speed*1.155
+            self.rect.x -= player_speed*1.145
         # Jump
         if keys[pygame.K_SPACE] and self.on_ground or keys[pygame.K_w] and self.on_ground:
             self.velocity_y = -player_jump_power
@@ -76,7 +76,16 @@ class Player(pygame.sprite.Sprite):
                 elif self.velocity_y < 0 and self.rect.top >= platform.rect.bottom + self.velocity_y:
                     self.rect.top = platform.rect.bottom
                     self.velocity_y = 0
-
+                elif self.rect.x > 0 and self.rect.right >= platform.rect.left and self.rect.left < platform.rect.left:
+                    # osuuko vasemmalta
+                    self.rect.right = platform.rect.left
+                    self.rect.x = self.rect.x  # pysähdy (placeholder)
+                elif self.rect.x < 0 and self.rect.left <= platform.rect.right and self.rect.right > platform.rect.right:
+                    # osuuko oikealta
+                    print("osuin oikealle")
+                    self.rect.left = platform.rect.right
+                    self.rect.x = self.rect.x # pysähdy (placeholder)
+                    
 class Platform(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
