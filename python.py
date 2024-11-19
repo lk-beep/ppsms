@@ -10,7 +10,6 @@ SCREEN_HEIGHT = 600
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Pepen mahtava seikkailu")
 
-
 current_level = 1 
 
 WHITE = (255, 255, 255)
@@ -21,7 +20,6 @@ Green = (0, 255, 0)
 
 ground_img = pygame.Surface((200, 20))  # Placeholder for platform image
 ground_img.fill(BLACK)
-
 # pelaajan asetukset
 player_width = 40
 player_height = 60
@@ -49,15 +47,14 @@ class Player(pygame.sprite.Sprite):
         self.on_ground = False
 
     def update(self, keys):
-
         # liikkuminen
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
             self.rect.x -= player_speed
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             self.rect.x += player_speed
-        if keys[pygame.K_LSHIFT] and keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+        if keys[pygame.K_LSHIFT] and keys[pygame.K_d] or keys[pygame.K_LSHIFT] and keys[pygame.K_RIGHT]:
             self.rect.x += player_speed*1.145
-        if keys[pygame.K_LSHIFT] and keys[pygame.K_a] or keys[pygame.K_LEFT]:
+        if keys[pygame.K_LSHIFT] and keys[pygame.K_a] or keys[pygame.K_LSHIFT] and keys[pygame.K_LEFT]:
             self.rect.x -= player_speed*1.145
         # Jump
         if keys[pygame.K_SPACE] and self.on_ground or keys[pygame.K_w] and self.on_ground:
@@ -107,37 +104,44 @@ class Platform(pygame.sprite.Sprite):
 
 player = Player(player_x, player_y)
 all_sprites.add(player)
-# tee poistumis area
-EXIT_WIDTH = 50
-EXIT_HEIGHT = 50
-exit_area = pygame.Rect(SCREEN_WIDTH - EXIT_WIDTH, SCREEN_HEIGHT - EXIT_HEIGHT, EXIT_WIDTH, EXIT_HEIGHT)
 
 def load_level(level):
-    global bg, platform_positions, player
-    #green mountain
+    global bg, platform_positions, exit_area, player
+    # Define platforms and exit area for each level
     if level == 1:
         bg = pygame.image.load("ppsms/Images/pixil-frame-0.png")
         platform_positions = [
             (0, 590),
             (150, 500),
             (250, 400),
-            (300 + EXIT_WIDTH, 300, SCREEN_WIDTH - (400 + EXIT_WIDTH), 20),
+            (300 + 50, 300, SCREEN_WIDTH - (400 + 50), 20),
             (100, 200),
-            (300 + EXIT_WIDTH, 100, SCREEN_WIDTH - (400 + EXIT_WIDTH), 20),
+            (300 + 50, 100, SCREEN_WIDTH - (400 + 50), 20),
             (500, 100, 50, 600)
         ]
-    # well    
+        exit_area = pygame.Rect(SCREEN_WIDTH - 50, SCREEN_HEIGHT - 50, 50, 50)  # Custom exit position for level 1
+
     elif level == 2:
         bg = pygame.image.load("ppsms/Images/pixil-frame-0_1.png")
         platform_positions = [
             (0, 590),
-            (200, 500),
-            (300, 400),
-            (450, 300),
-            (150, 200),
-            (350, 100, 200, 20)
+            (190, 90, 20, 600),
+            (190, 80, 320, 20),
+            (490, 90, 20, 300),
+            (120, 500, 80),
+            (0, 400, 80),
+            (120, 290, 80),
+            (0, 180, 80),
+            (500, 160, 100),
+            (400, 460, 200),
+            (400, 320, 100, 20),
+            (400, 200, 20, 120),
+            (260, 460, 80),
+            (200, 350, 80),
+            (350, 250, 50),
         ]
-    # snowy mountain    
+        exit_area = pygame.Rect(SCREEN_WIDTH - 100, SCREEN_HEIGHT - 100, 100, 100)  # Custom exit position for level 2
+
     elif level == 3:
         bg = pygame.image.load("ppsms/Images/pixil-frame-0_2.png")
         platform_positions = [
@@ -148,7 +152,8 @@ def load_level(level):
             (200, 200),
             (400, 100, 150, 20)
         ]
-    # heaven    
+        exit_area = pygame.Rect(SCREEN_WIDTH - 80, SCREEN_HEIGHT - 80, 80, 80)  # Custom exit position for level 3
+
     elif level == 4:
         bg = pygame.image.load("ppsms/Images/pixil-frame-0_3.png")
         platform_positions = [
@@ -158,8 +163,9 @@ def load_level(level):
             (500, 300),
             (200, 200),
             (400, 100, 150, 20)
-        ]    
-    # hell
+        ]
+        exit_area = pygame.Rect(SCREEN_WIDTH - 150, SCREEN_HEIGHT - 150, 150, 150)  # Custom exit position for level 4
+
     elif level == 5:
         bg = pygame.image.load("ppsms/Images/pixil-frame-0_7.png")
         platform_positions = [
@@ -169,29 +175,29 @@ def load_level(level):
             (500, 300),
             (200, 200),
             (400, 100, 150, 20)
-        ]   
-    # tyhjennä mappi
+        ]
+        exit_area = pygame.Rect(SCREEN_WIDTH - 200, SCREEN_HEIGHT - 200, 200, 200)  # Custom exit position for level 5
+
+    # Clear existing platforms and sprites
     platforms.empty()
     all_sprites.empty()
-    all_sprites.add(player)  # lisää pelaaja uudestaan
+    all_sprites.add(player)  # Add the player back to the sprite group
+    
     for pos in platform_positions:
         platform = Platform(*pos)
         platforms.add(platform)
         all_sprites.add(platform)
-    # resetoi pelaajan paikka
+
+    # Reset player position and velocity
     player.rect.topleft = (0, SCREEN_HEIGHT - player_height - 100)
     player.velocity_y = 0
 
 # Initial level load
 load_level(current_level)     
-for pos in platform_positions:
-    platform = Platform(*pos)
-    platforms.add(platform)
-    all_sprites.add(platform)
 
-# loop
+# Main game loop
 clock = pygame.time.Clock()
-start_time = pygame.time.get_ticks()  # aloita ajastin milisekunneissa
+start_time = pygame.time.get_ticks()  # Start timer
 running = True
 game_completed = False
 
@@ -202,7 +208,17 @@ while running:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-    
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_F1:
+                if current_level < 5:  # Ensure it doesn't exceed the final level
+                    current_level += 1
+                    load_level(current_level)
+                else:
+                    print("Olet jo viimeisellä tasolla!")
+
+   
+
+
     # Update player
     keys = pygame.key.get_pressed()
     player.update(keys)
@@ -219,7 +235,7 @@ while running:
 
     # Timer logic
     elapsed_time = (pygame.time.get_ticks() - start_time) // 1000  # muuta sekunneiksi
-    timer_text = font.render(f"Aika: {elapsed_time}s", True, BLACK)
+    timer_text = font.render(f"Aika: {elapsed_time}s", True, BLACK) 
 
     # Check for level completion
     if player.rect.colliderect(exit_area) and not game_completed:
