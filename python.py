@@ -119,12 +119,12 @@ def load_level(level):
             (300 + 50, 100, SCREEN_WIDTH - (400 + 50), 20),
             (500, 100, 50, 600)
         ]
-        exit_area = pygame.Rect(SCREEN_WIDTH - 50, SCREEN_HEIGHT - 50, 50, 50)  # Custom exit position for level 1
+        exit_area = pygame.Rect(SCREEN_WIDTH - 50, SCREEN_HEIGHT - 50, 50, 50)  # oma exit paikka for level 1
 
     elif level == 2:
         bg = pygame.image.load("ppsms/Images/pixil-frame-0_1.png")
         platform_positions = [
-            (0, 590),
+            (0, 590, 210),
             (190, 90, 20, 600),
             (190, 80, 320, 20),
             (490, 90, 20, 300),
@@ -140,31 +140,32 @@ def load_level(level):
             (200, 350, 80),
             (350, 250, 50),
         ]
-        exit_area = pygame.Rect(SCREEN_WIDTH - 100, SCREEN_HEIGHT - 100, 100, 100)  # Custom exit position for level 2
+        exit_area = pygame.Rect(420, 270, 80, 50)  # oma exit paikka for level 2
 
     elif level == 3:
         bg = pygame.image.load("ppsms/Images/pixil-frame-0_2.png")
         platform_positions = [
-            (0, 590),
-            (250, 500),
-            (350, 400),
-            (500, 300),
-            (200, 200),
-            (400, 100, 150, 20)
+            (0, 590, 70),
+            (100, 500, 90),
+            (300, 500, 90),
+            (500, 400, 100),
+            (300, 300, 95),
+            (150, 200, 95),
+            (450, 150, 200)
         ]
-        exit_area = pygame.Rect(SCREEN_WIDTH - 80, SCREEN_HEIGHT - 80, 80, 80)  # Custom exit position for level 3
+        exit_area = pygame.Rect(600 - 60, 20, 40, 40)  # oma exit paikka for level 3
 
     elif level == 4:
         bg = pygame.image.load("ppsms/Images/pixil-frame-0_3.png")
         platform_positions = [
             (0, 590),
-            (250, 500),
+            (200, 400),
             (350, 400),
             (500, 300),
             (200, 200),
-            (400, 100, 150, 20)
+            (100, 50, 50, 20)
         ]
-        exit_area = pygame.Rect(SCREEN_WIDTH - 150, SCREEN_HEIGHT - 150, 150, 150)  # Custom exit position for level 4
+        exit_area = pygame.Rect(SCREEN_WIDTH - 150, SCREEN_HEIGHT - 150, 150, 150)  # oma exit paikka for level 4
 
     elif level == 5:
         bg = pygame.image.load("ppsms/Images/pixil-frame-0_7.png")
@@ -176,7 +177,7 @@ def load_level(level):
             (200, 200),
             (400, 100, 150, 20)
         ]
-        exit_area = pygame.Rect(SCREEN_WIDTH - 200, SCREEN_HEIGHT - 200, 200, 200)  # Custom exit position for level 5
+        exit_area = pygame.Rect(SCREEN_WIDTH - 200, SCREEN_HEIGHT - 200, 200, 200)  # oma exit paikka for level 5
 
     # Clear existing platforms and sprites
     platforms.empty()
