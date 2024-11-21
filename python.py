@@ -53,46 +53,57 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             self.rect.x += player_speed
         if keys[pygame.K_LSHIFT] and keys[pygame.K_d] or keys[pygame.K_LSHIFT] and keys[pygame.K_RIGHT]:
-            self.rect.x += player_speed*1.145
+            self.rect.x += player_speed * 1.145
         if keys[pygame.K_LSHIFT] and keys[pygame.K_a] or keys[pygame.K_LSHIFT] and keys[pygame.K_LEFT]:
-            self.rect.x -= player_speed*1.145
-        # Jump
+            self.rect.x -= player_speed * 1.145
+        
+        # hyppy
         if keys[pygame.K_SPACE] and self.on_ground or keys[pygame.K_w] and self.on_ground:
             self.velocity_y = -player_jump_power
             self.on_ground = False
 
-        # gravity
+        # apply gravity
         self.velocity_y += player_gravity
         self.rect.y += self.velocity_y
 
+        # tarkista osuminen
         self.check_platform_collision()
-        
+
     def check_platform_collision(self):
-        self.on_ground = False  # Oletuksena pelaaja ei ole maassa
+        self.on_ground = False  # Assume the player is not on the ground by default
         for platform in platforms:
+            # kuole platformin logiikka
+            if platform.rect.height == 1:  # onko kuolema pplatformi
+                if self.velocity_y > 0 and self.rect.bottom >= platform.rect.top and self.rect.top < platform.rect.top:
+                    # osuuko päälle
+                    global current_level
+                    current_level = 1  # resetoi to level 1
+                    load_level(current_level)  # Reload level 1
+                    return  # lopeta looppaaminen
+
+            # Normal platform collision
             if self.rect.colliderect(platform.rect):
-                # sivujen collision check
+                # Horizontal collision
                 if self.rect.right >= platform.rect.left and self.rect.left < platform.rect.left:
-                    #  osuuko vasemmalta
+                    # Collides from the left
                     self.rect.right = platform.rect.left
                     self.velocity_y = 0
-                    self.on_ground = False
                 elif self.rect.left <= platform.rect.right and self.rect.right > platform.rect.right:
-                    # osuuko oikealta
+                    # Collides from the right
                     self.rect.left = platform.rect.right
                     self.velocity_y = 0
-                    self.on_ground = False
                 else:
-                    # sivujen collision check
+                    # Vertical collision
                     if self.velocity_y > 0 and self.rect.bottom >= platform.rect.top and self.rect.top < platform.rect.top:
-                        # Osuuko päällä
+                        # Land on top
                         self.rect.bottom = platform.rect.top
                         self.velocity_y = 0
                         self.on_ground = True
                     elif self.velocity_y < 0 and self.rect.top >= platform.rect.bottom + self.velocity_y:
-                        # osuuko alta
+                        # Hit the platform from below
                         self.rect.top = platform.rect.bottom
                         self.velocity_y = 0
+
                     
 class Platform(pygame.sprite.Sprite):
     def __init__(self, x, y, width=200, height=20):
@@ -105,11 +116,12 @@ class Platform(pygame.sprite.Sprite):
 player = Player(player_x, player_y)
 all_sprites.add(player)
 
+
 def load_level(level):
     global bg, platform_positions, exit_area, player
-    # Define platforms and exit area for each level
+    # platformit ja poistumiset
     if level == 1:
-        bg = pygame.image.load("ppsms/Images/pixil-frame-0.png")
+        bg = pygame.image.load("Images/pixil-frame-0.png")
         platform_positions = [
             (0, 590),
             (150, 500),
@@ -117,12 +129,13 @@ def load_level(level):
             (300 + 50, 300, SCREEN_WIDTH - (400 + 50), 20),
             (100, 200),
             (300 + 50, 100, SCREEN_WIDTH - (400 + 50), 20),
-            (500, 100, 50, 600)
+            (500, 100, 50, 600),
+            (0, SCREEN_HEIGHT - 3, SCREEN_WIDTH, 1)  # 1-kuolemis death platform
         ]
-        exit_area = pygame.Rect(SCREEN_WIDTH - 50, SCREEN_HEIGHT - 50, 50, 50)  # oma exit paikka for level 1
+        exit_area = pygame.Rect(SCREEN_WIDTH - 50, SCREEN_HEIGHT - 50, 50, 50)  # poistumis area for level 1
 
     elif level == 2:
-        bg = pygame.image.load("ppsms/Images/pixil-frame-0_1.png")
+        bg = pygame.image.load("Images/pixil-frame-0_1.png")
         platform_positions = [
             (0, 590, 210),
             (190, 90, 20, 600),
@@ -139,11 +152,12 @@ def load_level(level):
             (260, 460, 80),
             (200, 350, 80),
             (350, 250, 50),
+            (0, SCREEN_HEIGHT - 1, SCREEN_WIDTH, 1)  # 1-pixel kuolemis platform
         ]
-        exit_area = pygame.Rect(420, 270, 80, 50)  # oma exit paikka for level 2
+        exit_area = pygame.Rect(420, 270, 80, 50)  # poistumis area for level 2
 
     elif level == 3:
-        bg = pygame.image.load("ppsms/Images/pixil-frame-0_2.png")
+        bg = pygame.image.load("Images/pixil-frame-0_2.png")
         platform_positions = [
             (0, 590, 70),
             (100, 500, 90),
@@ -151,33 +165,37 @@ def load_level(level):
             (500, 400, 100),
             (300, 300, 95),
             (150, 200, 95),
-            (450, 150, 200)
+            (450, 150, 200),
+            (0, SCREEN_HEIGHT - 1, SCREEN_WIDTH, 1)  # 1-pixel kuolemis platform
         ]
-        exit_area = pygame.Rect(600 - 60, 20, 40, 40)  # oma exit paikka for level 3
+        exit_area = pygame.Rect(600 - 60, 20, 40, 40)  # poistumis area for level 3
 
     elif level == 4:
-        bg = pygame.image.load("ppsms/Images/pixil-frame-0_3.png")
+        bg = pygame.image.load("Images/pixil-frame-0_3.png")
         platform_positions = [
             (0, 590),
             (200, 400),
             (350, 400),
             (500, 300),
             (200, 200),
-            (100, 50, 50, 20)
+            (100, 50, 50, 20),
+            (0, SCREEN_HEIGHT - 1, SCREEN_WIDTH, 1)  # 1-pixel kuolemis platform
         ]
-        exit_area = pygame.Rect(SCREEN_WIDTH - 150, SCREEN_HEIGHT - 150, 150, 150)  # oma exit paikka for level 4
+        exit_area = pygame.Rect(SCREEN_WIDTH - 150, SCREEN_HEIGHT - 150, 150, 150)  # poistumis area for level 4
 
     elif level == 5:
-        bg = pygame.image.load("ppsms/Images/pixil-frame-0_7.png")
+        bg = pygame.image.load("Images/pixil-frame-0_7.png")
         platform_positions = [
             (0, 590),
             (250, 500),
             (350, 400),
             (500, 300),
             (200, 200),
-            (400, 100, 150, 20)
+            (400, 100, 150, 20),
+            (0, SCREEN_HEIGHT - 1, SCREEN_WIDTH, 1)  # 1-pixel kuolemis platform
         ]
-        exit_area = pygame.Rect(SCREEN_WIDTH - 200, SCREEN_HEIGHT - 200, 200, 200)  # oma exit paikka for level 5
+        exit_area = pygame.Rect(SCREEN_WIDTH - 200, SCREEN_HEIGHT - 200, 200, 200)  # poistumis area for level 5
+
 
     # Clear existing platforms and sprites
     platforms.empty()
