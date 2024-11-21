@@ -70,7 +70,7 @@ class Player(pygame.sprite.Sprite):
         self.check_platform_collision()
 
     def check_platform_collision(self):
-        self.on_ground = False  # Assume the player is not on the ground by default
+        self.on_ground = False  # pelaaja ei ole maassa
         for platform in platforms:
             # kuole platformin logiikka
             if platform.rect.height == 1:  # onko kuolema pplatformi
