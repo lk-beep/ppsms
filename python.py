@@ -27,7 +27,7 @@ STATE_LEADERBOARD = "leaderboard"
 state = STATE_MENU
 
 # Placeholder background for menu and leaderboard
-menu_bg = pygame.image.load("Images/pixil-frame-0_8.png")
+menu_bg = pygame.image.load("ppsms\Images\pixil-frame-0_8.png")
 
 leaderboard_bg = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
 leaderboard_bg.fill(WHITE)
@@ -174,7 +174,7 @@ class Player(pygame.sprite.Sprite):
         self.on_ground = False  # pelaaja ei ole maassa
         for platform in platforms:
             # kuole platformin logiikka
-            if platform.rect.height == 1:  # onko kuolema pplatformi
+            if platform.rect.height == 1:  # onko kuolema platformi
                 if self.velocity_y > 0 and self.rect.bottom >= platform.rect.top and self.rect.top < platform.rect.top:
                     # osuuko päälle
                     global current_level
@@ -222,7 +222,7 @@ def load_level(level):
 
     # Platformit ja poistumiset
     if level == 1:
-        bg = pygame.image.load("Images/pixil-frame-0.png")
+        bg = pygame.image.load("ppsms\Images/pixil-frame-0.png")
         platform_positions = [
             (0, 590),
             (150, 500),
@@ -237,13 +237,13 @@ def load_level(level):
         exit_area = pygame.Rect(SCREEN_WIDTH - 50, SCREEN_HEIGHT - 50, 50, 50)  # poistumis area for level 1
         # Musiikki tasolle 1
         try:
-            pygame.mixer.music.load("Music/stage_music.wav")
+            pygame.mixer.music.load("ppsms\Music/stage_music.wav")
             pygame.mixer.music.play(-1)  # loop ikuisesti
         except pygame.error as e:
             print(f"Error loading music: {e}")
 
     elif level == 2:
-        bg = pygame.image.load("Images/pixil-frame-0_1.png")
+        bg = pygame.image.load("ppsms\Images/pixil-frame-0_1.png")
         platform_positions = [
             (0, 590, 210),
             (190, 90, 20, 600),
@@ -268,15 +268,15 @@ def load_level(level):
         exit_area = pygame.Rect(420, 270, 80, 50)  # poistumis area for level 2
         # Musiikki tasolle 2
         try:
-            pygame.mixer.music.load("Music/stage_music2.wav") #placeholder
+            pygame.mixer.music.load("ppsms\Music/stage_music2.wav") #placeholder
             pygame.mixer.music.play(-1)  # loop ikuisesti
         except pygame.error as e:
             print(f"Error loading music: {e}")
 
     elif level == 3:
-        bg = pygame.image.load("Images/pixil-frame-0_2.png")
+        bg = pygame.image.load("ppsms\Images/pixil-frame-0_2.png")
         platform_positions = [
-            (0, 590, 70),
+            (0, 590, 100),
             (100, 500, 90),
             (300, 500, 90),
             (500, 400, 100),
@@ -289,7 +289,7 @@ def load_level(level):
         exit_area = pygame.Rect(600 - 60, 20, 40, 40)  # poistumis area for level 3
 
     elif level == 4:
-        bg = pygame.image.load("Images/pixil-frame-0_3.png")
+        bg = pygame.image.load("ppsms\Images/pixil-frame-0_3.png")
         platform_positions = [
             (0, 590, 70, 20),
             (100, 500, 70, 20),
@@ -305,7 +305,7 @@ def load_level(level):
         exit_area = pygame.Rect(SCREEN_WIDTH - 50, SCREEN_HEIGHT - 50, 50, 50)
 
     elif level == 5:
-        bg = pygame.image.load("Images/pixil-frame-0_7.png")
+        bg = pygame.image.load("ppsms\Images/pixil-frame-0_7.png")
         platform_positions = [
             (0, 500, 100),
             (200, 550, 100),
