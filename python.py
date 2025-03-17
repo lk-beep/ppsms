@@ -43,8 +43,6 @@ leaderboard_results = []
 
 def draw_menu():
     screen.blit(menu_bg, (0, 0))
-    title_text = font.render("Pepen mahtava seikkailu", True, BLACK)
-    screen.blit(title_text, (SCREEN_WIDTH // 2 - title_text.get_width() // 2, 50))
     pygame.draw.rect(screen, BLACK, start_button)
     pygame.draw.rect(screen, BLACK, quit_button)
     pygame.draw.rect(screen, BLACK, leaderboard_button)
@@ -77,7 +75,7 @@ def draw_leaderboard():
 def load_leaderboard():
     global leaderboard_results
     try:
-        with open("game_results.csv", "r") as csvfile:
+        with open("ppsms\game_results.csv", "r") as csvfile:
             csv_reader = csv.reader(csvfile)
             leaderboard_results = list(csv_reader)[1:]  # ohita row 1
             leaderboard_results.sort(key=lambda x: float(x[1]))  # sort ajalla
